@@ -1,14 +1,19 @@
 import { AppBar, Toolbar } from '@mui/material';
 import React from 'react';
 import { GoogleLogout } from 'react-google-login';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { removeUser } from '../../redux/actions/userAction';
 
 const Navbar = () => {
   const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const onSuccess = () => {
     console.log('Logout successful!');
+    dispatch(removeUser());
+    navigate('/');
   };
 
   const onFailure = () => {

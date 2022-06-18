@@ -1,13 +1,22 @@
 import { Container } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Layout from '../layout';
 import LoginImg from '../../assets/images/login.jpg';
 import GoogleLogin from 'react-google-login';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../redux/actions/userAction';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.email) {
+      navigate('/home');
+    }
+  }, [user, navigate]);
 
   const onSuccess = (res) => {
     dispatch(setUser(res.profileObj));
@@ -18,9 +27,9 @@ const Login = () => {
   };
 
   return (
-    <Layout>
+    <Layout footer={false}>
       <Container>
-        <div className="flex justify-center mt-20">
+        <div className="flex justify-center mt-20 sm:mb-72">
           <div className="p-3 shadow-md rounded-md w-full sm:w-96">
             <h6 className="text-xl font-bold text-center text-primary">
               Login

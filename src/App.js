@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './components/pages/Home';
 import Login from './components/pages/Login';
 import { getUser } from './redux/actions/userAction';
+import AuthProviders from './utils/Providers/auth.providers';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -26,7 +27,14 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route
+          path="/home"
+          element={
+            <AuthProviders>
+              <Home />
+            </AuthProviders>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

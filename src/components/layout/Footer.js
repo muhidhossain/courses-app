@@ -9,7 +9,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 const Footer = () => {
   return (
-    <div className="bg-footerBg py-8 absolute w-full bottom-0">
+    <div className="bg-footerBg py-8 mt-10">
       <Container>
         <div className="sm:flex sm:justify-between">
           <div>

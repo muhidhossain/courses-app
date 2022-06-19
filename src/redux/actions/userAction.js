@@ -1,7 +1,7 @@
 import { gapi, loadAuth2 } from 'gapi-script';
 import { ActionType } from './actionTypes';
 
-const creator = ['muhidhossain7@gmail.com'];
+const creator = ['muhidhossain7@gmail.com', 'tamkin22rahman@gmail.com'];
 
 export const getUser = () => async (dispatch) => {
   const auth = await loadAuth2(gapi, process.env.REACT_APP_GOOGLE_CLINT_ID);
@@ -19,6 +19,7 @@ export const getUser = () => async (dispatch) => {
 };
 
 export const setUser = (user) => {
+  user.creator = creator.includes(user.email);
   return {
     type: ActionType.SET_USER,
     payload: user,

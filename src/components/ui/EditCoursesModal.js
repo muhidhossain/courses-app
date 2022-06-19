@@ -4,16 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { button, modalStyle, outlinedButton } from '../../utils/commonStyle';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCourse } from '../../redux/actions/coursesAction';
+import { deleteCourse, updateCourse } from '../../redux/actions/coursesAction';
 import MuiAlert from '@mui/material/Alert';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const AddCoursesModal = ({ open, handleClose }) => {
+const EditCoursesModal = ({ open, handleClose, course }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const { addLoading, addSuccess } = useSelector((state) => state.courses);
+  const { editLoading, editSuccess, deleteSuccess, deleteLoading } =
+    useSelector((state) => state.courses);
 
   const dispatch = useDispatch();
   const {
@@ -24,14 +25,19 @@ const AddCoursesModal = ({ open, handleClose }) => {
   } = useForm();
 
   const onSubmit = (data) => {
-    dispatch(addCourse(data));
+    data.id = course?.id;
+    dispatch(updateCourse(data));
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteCourse(course?.id));
   };
 
   useEffect(() => {
-    if (addSuccess?.id) {
+    if (editSuccess?.id || deleteSuccess?.id) {
       setSnackbarOpen(true);
     }
-  }, [addSuccess]);
+  }, [editSuccess, deleteSuccess]);
 
   const closeModal = () => {
     reset();
@@ -57,12 +63,29 @@ const AddCoursesModal = ({ open, handleClose }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-          <h6 className="text-primary font-extrabold">Add Course</h6>
+          <div className="flex justify-between items-center">
+            <h6 className="text-primary font-extrabold">Edit Course</h6>
+            <Button
+              onClick={handleDelete}
+              disabled={deleteLoading}
+              sx={{
+                color: 'red',
+                border: '2px solid red',
+                fontWeight: '600',
+                '&:hover': { color: 'red', border: '2px solid red' },
+              }}
+              variant="outlined"
+            >
+              Delete
+            </Button>
+          </div>
+
           <form className="mt-6" onSubmit={handleSubmit(onSubmit)}>
             <Controller
               name="title"
               control={control}
               rules={{ required: true }}
+              defaultValue={course?.title}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -80,6 +103,7 @@ const AddCoursesModal = ({ open, handleClose }) => {
               name="price"
               control={control}
               rules={{ required: true }}
+              defaultValue={course?.price}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -98,6 +122,7 @@ const AddCoursesModal = ({ open, handleClose }) => {
               name="description"
               control={control}
               rules={{ required: true }}
+              defaultValue={course?.description}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -117,6 +142,7 @@ const AddCoursesModal = ({ open, handleClose }) => {
               name="image"
               control={control}
               rules={{ required: true }}
+              defaultValue={course?.image}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -135,6 +161,7 @@ const AddCoursesModal = ({ open, handleClose }) => {
               name="category"
               control={control}
               rules={{ required: true }}
+              defaultValue={course?.category}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -156,8 +183,8 @@ const AddCoursesModal = ({ open, handleClose }) => {
                 variant="outlined"
               >
                 Cancel
-              </Button>{' '}
-              <Button disabled={addLoading} sx={button} type="submit">
+              </Button>
+              <Button disabled={editLoading} sx={button} type="submit">
                 Save
               </Button>
             </div>
@@ -171,14 +198,16 @@ const AddCoursesModal = ({ open, handleClose }) => {
       >
         <Alert
           onClose={snackbarClose}
-          severity="success"
+          severity={editSuccess?.id ? 'success' : 'error'}
           sx={{ width: '100%' }}
         >
-          Course added successfully
+          {editSuccess?.id
+            ? 'Course updated successfully'
+            : 'Course deleted successfully'}
         </Alert>
       </Snackbar>
     </div>
   );
 };
 
-export default AddCoursesModal;
+export default EditCoursesModal;

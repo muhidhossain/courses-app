@@ -2,8 +2,10 @@ import { gapi } from 'gapi-script';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './components/pages/Home';
-import Login from './components/pages/Login';
+import CourseDetails from './pages/CourseDetails';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import NotFound from './pages/NotFound';
 import { getUser } from './redux/actions/userAction';
 import AuthProviders from './utils/Providers/auth.providers';
 
@@ -35,6 +37,15 @@ const App = () => {
             </AuthProviders>
           }
         />
+        <Route
+          path="/details/:id"
+          element={
+            <AuthProviders>
+              <CourseDetails />
+            </AuthProviders>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

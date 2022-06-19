@@ -1,10 +1,10 @@
 import { Container } from '@mui/material';
 import React, { useEffect } from 'react';
-import Layout from '../layout';
-import LoginImg from '../../assets/images/login.jpg';
+import Layout from '../components/layout';
+import LoginImg from '../assets/images/login.jpg';
 import GoogleLogin from 'react-google-login';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../../redux/actions/userAction';
+import { setUser } from '../redux/actions/userAction';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -20,10 +20,11 @@ const Login = () => {
 
   const onSuccess = (res) => {
     dispatch(setUser(res.profileObj));
+    navigate('/home');
   };
 
   const onFailure = (res) => {
-    console.log('LOGIN FAILED! res: ', res);
+    console.log('LOGIN FAILED!');
   };
 
   return (

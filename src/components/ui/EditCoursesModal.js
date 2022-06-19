@@ -4,7 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { button, modalStyle, outlinedButton } from '../../utils/commonStyle';
 import { Controller, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteCourse, updateCourse } from '../../redux/actions/coursesAction';
+import {
+  deleteCourse,
+  updateCourse,
+  updateDeleteSuccess,
+  updateEditSuccess,
+} from '../../redux/actions/coursesAction';
 import MuiAlert from '@mui/material/Alert';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -13,6 +18,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const EditCoursesModal = ({ open, handleClose, course }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const { editLoading, editSuccess, deleteSuccess, deleteLoading } =
     useSelector((state) => state.courses);
 
@@ -34,10 +40,20 @@ const EditCoursesModal = ({ open, handleClose, course }) => {
   };
 
   useEffect(() => {
-    if (editSuccess?.id || deleteSuccess?.id) {
+    if (editSuccess?.id) {
       setSnackbarOpen(true);
+    } else {
+      setSnackbarOpen(false);
     }
-  }, [editSuccess, deleteSuccess]);
+  }, [editSuccess]);
+
+  useEffect(() => {
+    if (deleteSuccess?.id) {
+      setDeleteOpen(true);
+    } else {
+      setDeleteOpen(false);
+    }
+  }, [deleteSuccess]);
 
   const closeModal = () => {
     reset();
@@ -50,8 +66,19 @@ const EditCoursesModal = ({ open, handleClose, course }) => {
     }
 
     reset();
+    dispatch(updateEditSuccess());
     setSnackbarOpen(false);
     handleClose();
+  };
+
+  const deleteClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    handleClose();
+    dispatch(updateDeleteSuccess());
+    setDeleteOpen(false);
   };
 
   return (
@@ -198,12 +225,15 @@ const EditCoursesModal = ({ open, handleClose, course }) => {
       >
         <Alert
           onClose={snackbarClose}
-          severity={editSuccess?.id ? 'success' : 'error'}
+          severity="success"
           sx={{ width: '100%' }}
         >
-          {editSuccess?.id
-            ? 'Course updated successfully'
-            : 'Course deleted successfully'}
+          Course updated successfully
+        </Alert>
+      </Snackbar>
+      <Snackbar open={deleteOpen} autoHideDuration={2000} onClose={deleteClose}>
+        <Alert onClose={deleteClose} severity="error" sx={{ width: '100%' }}>
+          Course deleted successfully
         </Alert>
       </Snackbar>
     </div>

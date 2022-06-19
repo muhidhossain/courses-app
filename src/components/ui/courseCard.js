@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 import { button, outlinedButton } from '../../utils/commonStyle';
 import EditIcon from '@mui/icons-material/Edit';
 import EditCoursesModal from './EditCoursesModal';
-import {
-  updateDeleteSuccess,
-  updateEditSuccess,
-} from '../../redux/actions/coursesAction';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import SuccessModal from './SuccessModal';
 
@@ -15,15 +11,12 @@ const CourseCard = ({ course, isCourseDetails }) => {
   const [open, setOpen] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const user = useSelector((state) => state.user.user);
-  const dispatch = useDispatch();
 
   const handleOpen = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
-    dispatch(updateEditSuccess());
-    dispatch(updateDeleteSuccess());
     setOpen(false);
   };
 
